@@ -6,8 +6,13 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		18F2C091301DF78B00B48DEE /* ss.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18F2C090301DF78900B48DEE /* ss.swift */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
-		58EEDD04301C7EB1005F07F0 /* New.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = New.app; path = "/Users/student_22/Documents/medora/build/Debug-iphoneos/New.app"; sourceTree = "<absolute>"; };
+		18F2C07F301DF75800B48DEE /* New.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = New.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		18F2C090301DF78900B48DEE /* ss.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ss.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -39,6 +44,8 @@
 			children = (
 				78A38042301DF04B007BFD54 /* viewModels */,
 				78A3804A301DF231007BFD54 /* Views */,
+				18F2C07F301DF75800B48DEE /* New.app */,
+				18F2C090301DF78900B48DEE /* ss.swift */,
 			);
 			sourceTree = "<group>";
 		};
@@ -65,7 +72,7 @@
 			packageProductDependencies = (
 			);
 			productName = New;
-			productReference = 58EEDD04301C7EB1005F07F0 /* New.app */;
+			productReference = 18F2C07F301DF75800B48DEE /* New.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -118,6 +125,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				18F2C091301DF78B00B48DEE /* ss.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
