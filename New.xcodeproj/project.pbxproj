@@ -7,15 +7,10 @@
 	objects = {
 
 /* Begin PBXFileReference section */
-		58EEDD04301C7EB1005F07F0 /* New.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = New.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		58EEDD04301C7EB1005F07F0 /* New.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = New.app; path = "/Users/student_22/Documents/medora/build/Debug-iphoneos/New.app"; sourceTree = "<absolute>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		58EEDD06301C7EB1005F07F0 /* New */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = New;
-			sourceTree = "<group>";
-		};
 		78A38042301DF04B007BFD54 /* viewModels */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = viewModels;
@@ -42,19 +37,9 @@
 		58EEDCFB301C7EB1005F07F0 = {
 			isa = PBXGroup;
 			children = (
-				58EEDD06301C7EB1005F07F0 /* New */,
-				58EEDD05301C7EB1005F07F0 /* Products */,
 				78A38042301DF04B007BFD54 /* viewModels */,
 				78A3804A301DF231007BFD54 /* Views */,
 			);
-			sourceTree = "<group>";
-		};
-		58EEDD05301C7EB1005F07F0 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				58EEDD04301C7EB1005F07F0 /* New.app */,
-			);
-			name = Products;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -73,7 +58,6 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				58EEDD06301C7EB1005F07F0 /* New */,
 				78A38042301DF04B007BFD54 /* viewModels */,
 				78A3804A301DF231007BFD54 /* Views */,
 			);
@@ -110,7 +94,7 @@
 			mainGroup = 58EEDCFB301C7EB1005F07F0;
 			minimizedProjectReferenceProxies = 1;
 			preferredProjectObjectVersion = 77;
-			productRefGroup = 58EEDD05301C7EB1005F07F0 /* Products */;
+			productRefGroup = 58EEDCFB301C7EB1005F07F0;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
