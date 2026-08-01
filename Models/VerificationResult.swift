@@ -1,7 +1,35 @@
-//
-//  VerificationResult.swift
-//  New
-//
-//  Created by STUDENT_24 on 01/08/26.
-//
+import Foundation
+import SwiftData
 
+@Model
+final class VerificationResult {
+    var id: UUID
+    var prescriptionRef: String
+    var riskLevel: RiskLevel
+    var interactionWarnings: String
+    var duplicateWarning: String
+    var dosageAssessment: String
+    var alternativeSuggestions: String
+    var aiSummary: String
+    var verifiedAt: Date
+    
+    init(
+        prescriptionRef: String = "",
+        riskLevel: RiskLevel = .unknown,
+        interactionWarnings: String = "",
+        duplicateWarning: String = "",
+        dosageAssessment: String = "",
+        alternativeSuggestions: String = "",
+        aiSummary: String = ""
+    ) {
+        self.id = UUID()
+        self.prescriptionRef = prescriptionRef
+        self.riskLevel = riskLevel
+        self.interactionWarnings = interactionWarnings
+        self.duplicateWarning = duplicateWarning
+        self.dosageAssessment = dosageAssessment
+        self.alternativeSuggestions = alternativeSuggestions
+        self.aiSummary = aiSummary
+        self.verifiedAt = .now
+    }
+}

@@ -6,8 +6,13 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		582EB634301DFCCB0055B9E7 /*  MedoraApp..swift in Sources */ = {isa = PBXBuildFile; fileRef = 582EB633301DFCC50055B9E7 /*  MedoraApp..swift */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
-		18F2C07F301DF75800B48DEE /* New.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = New.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		18F2C07F301DF75800B48DEE /* New.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = New.app; path = "/Users/student_22/Documents/medora/build/Debug-iphoneos/New.app"; sourceTree = "<absolute>"; };
+		582EB633301DFCC50055B9E7 /*  MedoraApp..swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = " MedoraApp..swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -49,9 +54,9 @@
 			children = (
 				78A38042301DF04B007BFD54 /* viewModels */,
 				78A3804A301DF231007BFD54 /* Views */,
-				18F2C07F301DF75800B48DEE /* New.app */,
 				18F2C092301DF80B00B48DEE /* Models */,
 				18F2C0A0301DF8B200B48DEE /* Services */,
+				582EB633301DFCC50055B9E7 /*  MedoraApp..swift */,
 			);
 			sourceTree = "<group>";
 		};
@@ -133,6 +138,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				582EB634301DFCCB0055B9E7 /*  MedoraApp..swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
