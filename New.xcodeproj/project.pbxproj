@@ -16,9 +16,14 @@
 			path = New;
 			sourceTree = "<group>";
 		};
-		78A38042301DF04B007BFD54 /* viewmodels */ = {
+		78A38042301DF04B007BFD54 /* viewModels */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = viewmodels;
+			path = viewModels;
+			sourceTree = "<group>";
+		};
+		78A3804A301DF231007BFD54 /* Views */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Views;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -39,7 +44,8 @@
 			children = (
 				58EEDD06301C7EB1005F07F0 /* New */,
 				58EEDD05301C7EB1005F07F0 /* Products */,
-				78A38042301DF04B007BFD54 /* viewmodels */,
+				78A38042301DF04B007BFD54 /* viewModels */,
+				78A3804A301DF231007BFD54 /* Views */,
 			);
 			sourceTree = "<group>";
 		};
@@ -68,7 +74,8 @@
 			);
 			fileSystemSynchronizedGroups = (
 				58EEDD06301C7EB1005F07F0 /* New */,
-				78A38042301DF04B007BFD54 /* viewmodels */,
+				78A38042301DF04B007BFD54 /* viewModels */,
+				78A3804A301DF231007BFD54 /* Views */,
 			);
 			name = New;
 			packageProductDependencies = (
