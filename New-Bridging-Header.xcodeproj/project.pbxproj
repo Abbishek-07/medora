@@ -7,12 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		582EB634301DFCCB0055B9E7 /*  MedoraApp..swift in Sources */ = {isa = PBXBuildFile; fileRef = 582EB633301DFCC50055B9E7 /*  MedoraApp..swift */; };
+		582EB634301DFCCB0055B9E7 /*  MedoraApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 582EB633301DFCC50055B9E7 /*  MedoraApp.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		18F2C07F301DF75800B48DEE /* New.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = New.app; path = "/Users/student_22/Documents/medora/build/Debug-iphoneos/New.app"; sourceTree = "<absolute>"; };
-		582EB633301DFCC50055B9E7 /*  MedoraApp..swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = " MedoraApp..swift"; sourceTree = "<group>"; };
+		582EB633301DFCC50055B9E7 /*  MedoraApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = " MedoraApp.swift"; sourceTree = "<group>"; };
+		582EB635301DFEB30055B9E7 /* New.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = New.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -56,7 +56,8 @@
 				78A3804A301DF231007BFD54 /* Views */,
 				18F2C092301DF80B00B48DEE /* Models */,
 				18F2C0A0301DF8B200B48DEE /* Services */,
-				582EB633301DFCC50055B9E7 /*  MedoraApp..swift */,
+				582EB633301DFCC50055B9E7 /*  MedoraApp.swift */,
+				582EB635301DFEB30055B9E7 /* New.app */,
 			);
 			sourceTree = "<group>";
 		};
@@ -85,7 +86,7 @@
 			packageProductDependencies = (
 			);
 			productName = New;
-			productReference = 18F2C07F301DF75800B48DEE /* New.app */;
+			productReference = 582EB635301DFEB30055B9E7 /* New.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -104,7 +105,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 58EEDCFF301C7EB1005F07F0 /* Build configuration list for PBXProject "New" */;
+			buildConfigurationList = 58EEDCFF301C7EB1005F07F0 /* Build configuration list for PBXProject "New-Bridging-Header" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -138,7 +139,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				582EB634301DFCCB0055B9E7 /*  MedoraApp..swift in Sources */,
+				582EB634301DFCCB0055B9E7 /*  MedoraApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -290,7 +291,7 @@
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = "New/New-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
@@ -324,7 +325,7 @@
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = "New/New-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -334,7 +335,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		58EEDCFF301C7EB1005F07F0 /* Build configuration list for PBXProject "New" */ = {
+		58EEDCFF301C7EB1005F07F0 /* Build configuration list for PBXProject "New-Bridging-Header" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				58EEDD0D301C7EB2005F07F0 /* Debug */,

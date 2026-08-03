@@ -80,7 +80,9 @@ struct NewPrescriptionView: View {
         .onChange(of: photoItem) { _, item in
             guard let item else { return }
             item.loadTransferable(type: Data.self) {
-                if case .success(let d) = $0, let img = UIImage(data: d) { vm.scannedImage = img }
+                if case .success(let data) = $0, let data, let img = UIImage(data: data) {
+                    vm.scannedImage = img
+                }
             }
         }
         .onChange(of: vm.didSave) { _, s in if s { dismiss() } }

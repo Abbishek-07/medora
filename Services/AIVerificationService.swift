@@ -1,5 +1,6 @@
 import Foundation
 import NaturalLanguage
+import SwiftData
 
 final class AIVerificationService {
     private let db: MedicineDatabaseService
