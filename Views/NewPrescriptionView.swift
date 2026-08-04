@@ -1,3 +1,12 @@
+//
+//  NewPrescriptionView.swift
+//  Medora
+//
+//  Same NewPrescriptionViewModel, camera/photo/PDF import, OCR flow and
+//  save logic as before — only the visual layer changed to match the
+//  white + pink theme, with the scan/upload section pinned to the top.
+//
+
 import SwiftUI
 import SwiftData
 import PhotosUI
@@ -15,60 +24,77 @@ struct NewPrescriptionView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: 20) {
-                VStack(spacing: 12) {
-                    Image(systemName: "doc.viewfinder").font(.system(size: 40)).foregroundStyle(.teal)
-                    Text("Scan Prescription").font(.headline)
-                    Text("Use camera or upload a PDF/image").font(.caption).foregroundStyle(.secondary)
-                    HStack(spacing: 12) {
-                        Button { showCamera = true } label: {
-                            Label("Camera", systemImage: "camera").frame(maxWidth: .infinity)
-                        }.buttonStyle(.bordered)
-                        Menu {
-                            Button { showPicker = true } label: { Label("Photo Library", systemImage: "photo.on.rectangle") }
-                            Button { showFile = true } label: { Label("PDF File", systemImage: "doc.badge.plus") }
-                        } label: { Label("Upload", systemImage: "square.and.arrow.up") }
-                        .buttonStyle(.borderedProminent)
+                scanSection
+
+                if vm.isProcessing {
+                    HStack(spacing: 8) {
+                        ProgressView().tint(.medoraPinkDeep)
+                        Text("Reading prescription...")
+                            .font(.caption)
+                            .foregroundStyle(Color.medoraGraySubtle)
                     }
                 }
-                .padding().background(.regularMaterial).clipShape(.rect(cornerRadius: 16))
 
-                if vm.isProcessing { HStack { ProgressView(); Text("Reading prescription...").font(.caption) } }
-                if let e = vm.ocrError { Label(e, systemImage: "exclamationmark.triangle").font(.caption).foregroundStyle(.red) }
+                if let e = vm.ocrError {
+                    Label(e, systemImage: "exclamationmark.triangle.fill")
+                        .font(.caption)
+                        .foregroundStyle(Color.medoraFlagged)
+                }
+
                 if !vm.scannedText.isEmpty {
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text("Extracted Text").font(.caption).foregroundStyle(.secondary)
-                        Text(vm.scannedText).font(.caption).italic().padding(8).background(.quaternary).clipShape(.rect(cornerRadius: 8))
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text("Extracted Text")
+                            .font(.caption.weight(.semibold))
+                            .foregroundStyle(Color.medoraGraySubtle)
+                        Text(vm.scannedText)
+                            .font(.caption)
+                            .italic()
+                            .foregroundStyle(Color.medoraInk)
+                            .padding(10)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .background(
+                                RoundedRectangle(cornerRadius: 12).fill(Color.medoraPinkSoft.opacity(0.5))
+                            )
                     }
                 }
 
-                Divider(); Text("or enter manually").font(.caption).foregroundStyle(.secondary)
-
-                Group {
-                    TextField("Patient Name *", text: $vm.patientName).textContentType(.name).textFieldStyle(.roundedBorder)
-                    TextField("Medicine Name *", text: $vm.medicineName).textFieldStyle(.roundedBorder)
-                    HStack {
-                        TextField("Dosage", text: $vm.dosage); TextField("Frequency", text: $vm.frequency)
-                    }.textFieldStyle(.roundedBorder)
-                    Picker("Age Group", selection: $vm.ageGroup) {
-                        ForEach(AgeGroup.allCases, id: \.self) { Text($0.rawValue).tag($0) }
-                    }.pickerStyle(.segmented)
-                    DatePicker("Prescription Date", selection: $vm.date, displayedComponents: .date)
-                    TextField("Notes", text: $vm.notes, axis: .vertical).textFieldStyle(.roundedBorder).lineLimit(3...6)
+                HStack {
+                    Rectangle().fill(Color.medoraPinkSoft).frame(height: 1)
+                    Text("or enter manually")
+                        .font(.caption)
+                        .foregroundStyle(Color.medoraGraySubtle)
+                        .fixedSize()
+                    Rectangle().fill(Color.medoraPinkSoft).frame(height: 1)
                 }
 
-                if let e = vm.saveError { Label(e, systemImage: "exclamationmark.triangle").foregroundStyle(.red).font(.caption) }
+                manualEntrySection
+
+                if let e = vm.saveError {
+                    Label(e, systemImage: "exclamationmark.triangle.fill")
+                        .foregroundStyle(Color.medoraFlagged)
+                        .font(.caption)
+                }
 
                 Button {
                     vm.save(context: context)
                 } label: {
-                    if vm.isSaving { HStack { ProgressView(); Text("Saving...") } }
-                    else { Label("Save Prescription", systemImage: "checkmark.shield") }
+                    if vm.isSaving {
+                        HStack(spacing: 8) {
+                            ProgressView().tint(.white)
+                            Text("Saving...")
+                        }
+                        .medoraPrimaryButton()
+                    } else {
+                        Label("Save Prescription", systemImage: "checkmark.shield.fill")
+                            .medoraPrimaryButton()
+                    }
                 }
-                .buttonStyle(.borderedProminent)
                 .disabled(!vm.isValid || vm.isSaving)
-                .frame(maxWidth: .infinity)
-            }.padding()
+                .opacity((vm.isValid && !vm.isSaving) ? 1 : 0.5)
+            }
+            .padding()
         }
+        .background(LinearGradient.medoraBackground.ignoresSafeArea())
         .navigationTitle("New Prescription")
         .navigationBarTitleDisplayMode(.inline)
         .fullScreenCover(isPresented: $showCamera) { CameraView(image: $vm.scannedImage) }
@@ -86,5 +112,125 @@ struct NewPrescriptionView: View {
             }
         }
         .onChange(of: vm.didSave) { _, s in if s { dismiss() } }
+    }
+
+    // MARK: - Scan / upload section (kept at the top, as requested)
+
+    private var scanSection: some View {
+        VStack(spacing: 14) {
+            ZStack {
+                Circle()
+                    .fill(Color.medoraPinkSoft)
+                    .frame(width: 64, height: 64)
+                Image(systemName: "doc.viewfinder")
+                    .font(.system(size: 28, weight: .semibold))
+                    .foregroundStyle(Color.medoraPinkDeep)
+            }
+
+            VStack(spacing: 4) {
+                Text("Scan Prescription")
+                    .font(.system(.headline, design: .rounded))
+                    .foregroundStyle(Color.medoraInk)
+                Text("Use camera or upload a PDF/image")
+                    .font(.caption)
+                    .foregroundStyle(Color.medoraGraySubtle)
+            }
+
+            HStack(spacing: 12) {
+                Button { showCamera = true } label: {
+                    Label("Camera", systemImage: "camera.fill")
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundStyle(Color.medoraPinkDeep)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 12)
+                        .background(
+                            RoundedRectangle(cornerRadius: 14)
+                                .stroke(Color.medoraPink, lineWidth: 1.5)
+                        )
+                }
+
+                Menu {
+                    Button { showPicker = true } label: { Label("Photo Library", systemImage: "photo.on.rectangle") }
+                    Button { showFile = true } label: { Label("PDF File", systemImage: "doc.badge.plus") }
+                } label: {
+                    Label("Upload", systemImage: "square.and.arrow.up")
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundStyle(.white)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 12)
+                        .background(
+                            RoundedRectangle(cornerRadius: 14).fill(LinearGradient.medoraPinkButton)
+                        )
+                }
+            }
+        }
+        .medoraCard()
+    }
+
+    // MARK: - Manual entry fields
+
+    private var manualEntrySection: some View {
+        VStack(spacing: 14) {
+            MedoraTextField(placeholder: "Patient Name *", text: $vm.patientName, icon: "person.fill")
+                .textContentType(.name)
+            MedoraTextField(placeholder: "Medicine Name *", text: $vm.medicineName, icon: "pills.fill")
+
+            HStack(spacing: 12) {
+                MedoraTextField(placeholder: "Dosage", text: $vm.dosage, icon: "cross.vial.fill")
+                MedoraTextField(placeholder: "Frequency", text: $vm.frequency, icon: "clock.fill")
+            }
+
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Age Group")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(Color.medoraGraySubtle)
+                Picker("Age Group", selection: $vm.ageGroup) {
+                    ForEach(AgeGroup.allCases, id: \.self) { Text($0.rawValue).tag($0) }
+                }
+                .pickerStyle(.segmented)
+                .tint(.medoraPinkDeep)
+            }
+
+            VStack(alignment: .leading, spacing: 8) {
+                DatePicker("Prescription Date", selection: $vm.date, displayedComponents: .date)
+                    .tint(.medoraPinkDeep)
+                    .font(.subheadline)
+            }
+            .padding(.horizontal, 14)
+            .padding(.vertical, 12)
+            .background(RoundedRectangle(cornerRadius: 14).fill(Color.white))
+
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Notes")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(Color.medoraGraySubtle)
+                TextField("Add any additional notes", text: $vm.notes, axis: .vertical)
+                    .lineLimit(3...6)
+                    .padding(.horizontal, 14)
+                    .padding(.vertical, 12)
+                    .background(RoundedRectangle(cornerRadius: 14).fill(Color.white))
+            }
+        }
+    }
+}
+
+// MARK: - Reusable pink-themed text field
+
+private struct MedoraTextField: View {
+    let placeholder: String
+    @Binding var text: String
+    let icon: String
+
+    var body: some View {
+        HStack(spacing: 10) {
+            Image(systemName: icon)
+                .foregroundStyle(Color.medoraPinkDeep)
+                .frame(width: 18)
+            TextField(placeholder, text: $text)
+                .font(.subheadline)
+        }
+        .padding(.horizontal, 14)
+        .padding(.vertical, 13)
+        .background(RoundedRectangle(cornerRadius: 14).fill(Color.white))
     }
 }
