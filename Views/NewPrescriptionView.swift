@@ -174,6 +174,7 @@ struct NewPrescriptionView: View {
             MedoraTextField(placeholder: "Patient Name *", text: $vm.patientName, icon: "person.fill")
                 .textContentType(.name)
             MedoraTextField(placeholder: "Medicine Name *", text: $vm.medicineName, icon: "pills.fill")
+            MedoraTextField(placeholder: "Diagnosis / Condition", text: $vm.diagnosis, icon: "stethoscope")
 
             HStack(spacing: 12) {
                 MedoraTextField(placeholder: "Dosage", text: $vm.dosage, icon: "cross.vial.fill")

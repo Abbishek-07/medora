@@ -12,6 +12,7 @@ final class Prescription {
     var status: PrescriptionStatus
     var date: Date
     var notes: String
+    var diagnosis: String = ""
     var aiSummary: String
     var riskLevel: RiskLevel
     var interactionWarnings: String
@@ -27,7 +28,8 @@ final class Prescription {
         ageGroup: AgeGroup = .adult,
         status: PrescriptionStatus = .pending,
         date: Date = .now,
-        notes: String = ""
+        notes: String = "",
+        diagnosis: String = ""
     ) {
         self.id = UUID()
         self.patientName = patientName
@@ -38,6 +40,7 @@ final class Prescription {
         self.status = status
         self.date = date
         self.notes = notes
+        self.diagnosis = diagnosis
         self.aiSummary = ""
         self.riskLevel = .unknown
         self.interactionWarnings = ""

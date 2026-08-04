@@ -11,6 +11,7 @@ final class NewPrescriptionViewModel {
     var frequency = ""
     var ageGroup: AgeGroup = .adult
     var notes = ""
+    var diagnosis = ""
     var date = Date()
 
     var scannedImage: UIImage?
@@ -28,7 +29,7 @@ final class NewPrescriptionViewModel {
 
     func reset() {
         patientName = ""; medicineName = ""; dosage = ""; frequency = ""
-        ageGroup = .adult; notes = ""; date = .now
+        ageGroup = .adult; notes = ""; diagnosis = ""; date = .now
         scannedImage = nil; scannedText = ""; ocrError = nil
         isSaving = false; saveError = nil; didSave = false
     }
@@ -80,7 +81,8 @@ final class NewPrescriptionViewModel {
             dosage: dosage.trimmingCharacters(in: .whitespaces),
             frequency: frequency.trimmingCharacters(in: .whitespaces),
             ageGroup: ageGroup, date: date,
-            notes: notes.trimmingCharacters(in: .whitespaces)
+            notes: notes.trimmingCharacters(in: .whitespaces),
+            diagnosis: diagnosis.trimmingCharacters(in: .whitespaces)
         )
         context.insert(rx)
         do {

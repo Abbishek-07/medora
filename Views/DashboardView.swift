@@ -26,42 +26,6 @@ struct DashboardView: View {
                     StatCard(icon: "exclamationmark.triangle.fill", label: "Flagged", value: "\(vm.flagged)", color: .medoraFlagged)
                 }
 
-                if !vm.recent.isEmpty {
-                    VStack(alignment: .leading, spacing: 12) {
-                        Text("Recent Prescriptions")
-                            .font(.system(.headline, design: .rounded))
-                            .foregroundStyle(Color.medoraInk)
-
-                        VStack(spacing: 4) {
-                            ForEach(vm.recent) { rx in
-                                NavigationLink(destination: VerificationDetailView(prescription: rx)) {
-                                    HStack {
-                                        VStack(alignment: .leading, spacing: 2) {
-                                            Text(rx.patientName)
-                                                .font(.system(.subheadline, design: .rounded, weight: .semibold))
-                                                .foregroundStyle(Color.medoraInk)
-                                            Text(rx.medicineName)
-                                                .font(.caption)
-                                                .foregroundStyle(Color.medoraGraySubtle)
-                                        }
-                                        Spacer()
-                                        StatusBadge(status: rx.status)
-                                    }
-                                    .padding(.vertical, 8)
-                                    .padding(.horizontal, 4)
-                                }
-                                .buttonStyle(.plain)
-
-                                if rx.id != vm.recent.last?.id {
-                                    Divider().opacity(0.4)
-                                }
-                            }
-                        }
-                    }
-                    .medoraCard()
-                    .transition(.opacity.combined(with: .move(edge: .top)))
-                }
-
                 if vm.isLoading {
                     ProgressView()
                         .tint(.medoraPinkDeep)
@@ -72,7 +36,6 @@ struct DashboardView: View {
         }
         .background(LinearGradient.medoraBackground.ignoresSafeArea())
         .navigationTitle("Medora")
-        .animation(.easeInOut(duration: 0.3), value: vm.recent.count)
         .onAppear { vm.load(context: context) }
         .refreshable { vm.load(context: context) }
     }
