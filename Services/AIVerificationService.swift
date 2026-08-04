@@ -17,6 +17,7 @@ final class AIVerificationService {
         let engine = VerificationEngine(db: db)
         let result = engine.verify(prescription: prescription, existingPrescriptions: existing)
         
+        print("riskLevel:", result.riskLevel, "warnings:", result.interactionWarnings, "dosage:", result.dosageAssessment)
         prescription.interactionWarnings = result.interactionWarnings
         prescription.duplicateWarning = result.duplicateWarning
         prescription.dosageAssessment = result.dosageAssessment
