@@ -2,11 +2,6 @@
 //  PrescriptionsListView.swift
 //  Medora
 //
-//  Same @Query, search, filter and delete logic as before — the status
-//  picker moved from the toolbar into pink filter chips (matches the
-//  rest of the theme), and rows are now white cards instead of default
-//  List rows.
-//
 
 import SwiftUI
 import SwiftData
@@ -29,40 +24,6 @@ struct PrescriptionsListView: View {
     }
 
     var body: some View {
-<<<<<<< HEAD
-        List(selection: $selectedIDs) {
-            if filtered.isEmpty {
-                ContentUnavailableView("No Prescriptions", systemImage: "pills",
-                    description: Text(all.isEmpty ? "Add your first prescription" : "No results match your filters"))
-            } else {
-                ForEach(filtered) { rx in
-                    Group {
-                        if isSelecting {
-                            HStack {
-                                rowContent(rx)
-                            }
-                        } else {
-                            NavigationLink(destination: VerificationDetailView(prescription: rx)) {
-                                rowContent(rx)
-                            }
-                        }
-                    }
-                    .swipeActions(edge: .trailing) {
-                        Button(role: .destructive) {
-                            context.delete(rx)
-                            try? context.save()
-                        } label: {
-                            Label("Delete", systemImage: "trash")
-                        }
-                    }
-                    .contextMenu {
-                        Button(role: .destructive) {
-                            context.delete(rx)
-                            try? context.save()
-                        } label: {
-                            Label("Delete", systemImage: "trash")
-                        }
-=======
         VStack(spacing: 0) {
             filterChips
 
@@ -77,47 +38,38 @@ struct PrescriptionsListView: View {
                     .listRowSeparator(.hidden)
                 } else {
                     ForEach(filtered) { rx in
-                        NavigationLink(destination: VerificationDetailView(prescription: rx)) {
-                            PrescriptionRow(prescription: rx)
-                        }
-                        .listRowBackground(Color.clear)
-                        .listRowSeparator(.hidden)
-                        .listRowInsets(EdgeInsets(top: 6, leading: 16, bottom: 6, trailing: 16))
-                    }
-                    .onDelete { idx in
-                        for i in idx { context.delete(filtered[i]) }
-                        try? context.save()
->>>>>>> main
+                        rowView(for: rx)
+                            .listRowBackground(Color.clear)
+                            .listRowSeparator(.hidden)
+                            .listRowInsets(EdgeInsets(top: 6, leading: 16, bottom: 6, trailing: 16))
+                            .swipeActions(edge: .trailing) {
+                                Button(role: .destructive) {
+                                    context.delete(rx)
+                                    try? context.save()
+                                } label: {
+                                    Label("Delete", systemImage: "trash")
+                                }
+                            }
+                            .contextMenu {
+                                Button(role: .destructive) {
+                                    context.delete(rx)
+                                    try? context.save()
+                                } label: {
+                                    Label("Delete", systemImage: "trash")
+                                }
+                            }
                     }
                 }
             }
             .listStyle(.plain)
             .scrollContentBackground(.hidden)
         }
-<<<<<<< HEAD
-        .environment(\.editMode, .constant(isSelecting ? .active : .inactive))
-=======
         .background(LinearGradient.medoraBackground.ignoresSafeArea())
->>>>>>> main
         .searchable(text: $search, prompt: "Search by patient or medicine")
         .navigationTitle("Prescriptions")
         .animation(.easeInOut(duration: 0.25), value: filter)
         .animation(.easeInOut(duration: 0.25), value: search)
-    }
-
-    private var filterChips: some View {
-        ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: 10) {
-                FilterChip(title: "All", isSelected: filter == nil, tint: .medoraPinkDeep) {
-                    filter = nil
-                }
-                ForEach(PrescriptionStatus.allCases, id: \.self) { status in
-                    FilterChip(title: status.rawValue, isSelected: filter == status, tint: status.medoraColor) {
-                        filter = status
-                    }
-                }
-            }
-<<<<<<< HEAD
+        .toolbar {
             ToolbarItem(placement: .topBarLeading) {
                 if isSelecting {
                     Button("Cancel") {
@@ -171,7 +123,45 @@ struct PrescriptionsListView: View {
                 isSelecting = false
             }
             Button("Cancel", role: .cancel) {}
-=======
+        }
+    }
+
+    @ViewBuilder
+    private func rowView(for rx: Prescription) -> some View {
+        if isSelecting {
+            Button {
+                if selectedIDs.contains(rx.id) {
+                    selectedIDs.remove(rx.id)
+                } else {
+                    selectedIDs.insert(rx.id)
+                }
+            } label: {
+                HStack {
+                    Image(systemName: selectedIDs.contains(rx.id) ? "checkmark.circle.fill" : "circle")
+                        .foregroundStyle(selectedIDs.contains(rx.id) ? Color.medoraPinkDeep : Color.medoraGraySubtle)
+                    PrescriptionRow(prescription: rx)
+                }
+            }
+            .buttonStyle(.plain)
+        } else {
+            NavigationLink(destination: VerificationDetailView(prescription: rx)) {
+                PrescriptionRow(prescription: rx)
+            }
+        }
+    }
+
+    private var filterChips: some View {
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: 10) {
+                FilterChip(title: "All", isSelected: filter == nil, tint: .medoraPinkDeep) {
+                    filter = nil
+                }
+                ForEach(PrescriptionStatus.allCases, id: \.self) { status in
+                    FilterChip(title: status.rawValue, isSelected: filter == status, tint: status.medoraColor) {
+                        filter = status
+                    }
+                }
+            }
             .padding(.horizontal, 16)
             .padding(.vertical, 12)
         }
@@ -231,19 +221,6 @@ private struct FilterChip: View {
                 .padding(.horizontal, 14)
                 .padding(.vertical, 8)
                 .background(Capsule().fill(isSelected ? tint : tint.opacity(0.12)))
->>>>>>> main
         }
-    }
-
-    @ViewBuilder
-    private func rowContent(_ rx: Prescription) -> some View {
-        VStack(alignment: .leading, spacing: 4) {
-            Text(rx.patientName).font(.subheadline).bold()
-            Text(rx.medicineName).font(.caption).foregroundStyle(.secondary)
-            HStack(spacing: 8) {
-                Text(rx.date, style: .date).font(.caption2).foregroundStyle(.secondary)
-                StatusBadge(status: rx.status)
-            }
-        }.padding(.vertical, 4)
     }
 }
