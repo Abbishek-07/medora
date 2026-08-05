@@ -103,7 +103,7 @@ struct VerificationEngine {
 
         // 6. Determine risk level — combines drug-safety checks (as before)
         //    with the diagnosis severity tier.
-        let riskLevel: RiskLevel
+        var riskLevel: RiskLevel
         let criticalCount = [
             dosageText.lowercased().contains("contraindicated"),
             dosageText.lowercased().contains("reyes"),
@@ -147,3 +147,4 @@ struct VerificationEngine {
         )
     }
 }
+
