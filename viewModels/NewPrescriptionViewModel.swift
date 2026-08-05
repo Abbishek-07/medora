@@ -88,8 +88,22 @@ final class NewPrescriptionViewModel {
         do {
             try context.save()
             didSave = true
-            let ai = AIVerificationService(context: context)
-            Task { await ai.analyzePrescription(rx) }
+            // Run rule-based verification
+            let db = MedicineDatabaseService(context: context)
+            let engine = VerificationEngine(db: db)
+            let existingDescriptor = FetchDescriptor<Prescription>()
+            let existing = (try? context.fetch(existingDescriptor)) ?? []
+            let result = engine.verify(prescription: rx, existingPrescriptions: existing)
+
+            rx.interactionWarnings = result.interactionWarnings
+            rx.duplicateWarning = result.duplicateWarning
+            rx.dosageAssessment = result.dosageAssessment
+            rx.alternativeSuggestions = result.alternativeSuggestions
+            rx.riskLevel = result.riskLevel
+            rx.status = result.riskLevel == .low ? .verified : .flagged
+
+            context.insert(result)
+            try? context.save()
         } catch { saveError = error.localizedDescription }
         isSaving = false
     }
