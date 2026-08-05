@@ -122,16 +122,20 @@ struct VerificationEngine {
             riskLevel = .low
         }
 
-        // 7. AI-style summary
-        let summary = generateSummary(
-            patientName: prescription.patientName,
-            medicineName: prescription.medicineName,
-            riskLevel: riskLevel,
-            hasInteractions: !interactions.isEmpty,
-            hasDuplicates: !duplicateWarnings.isEmpty,
-            ageGroup: prescription.ageGroup,
-            conditionSeverity: conditionSeverity
-        )
+        // 7. Summary
+        let summaryText: String
+        switch riskLevel {
+        case .low:
+            summaryText = "Verified safe. No major issues detected."
+        case .medium:
+            summaryText = "Review recommended due to potential concerns."
+        case .high:
+            summaryText = "High risk detected. Pharmacist review required."
+        case .critical:
+            summaryText = "Critical safety alert. Do not dispense without prescriber consultation."
+        case .unknown:
+            summaryText = "Insufficient data to verify."
+        }
 
         return VerificationResult(
             prescriptionRef: "\(prescription.patientName) — \(prescription.medicineName)",
@@ -139,33 +143,7 @@ struct VerificationEngine {
             interactionWarnings: interactionText,
             duplicateWarning: duplicateText,
             dosageAssessment: dosageText,
-            alternativeSuggestions: altText,
-            aiSummary: summary
+            alternativeSuggestions: altText
         )
-    }
-
-    private func generateSummary(
-        patientName: String,
-        medicineName: String,
-        riskLevel: RiskLevel,
-        hasInteractions: Bool,
-        hasDuplicates: Bool,
-        ageGroup: AgeGroup,
-        conditionSeverity: DiseaseSeverity
-    ) -> String {
-        switch riskLevel {
-        case .low:
-            return "Verified safe. \(medicineName) at prescribed dosage is standard for \(ageGroup.rawValue.lowercased()) patients. No interactions or duplicates found. Remind \(patientName) to complete the full course."
-        case .medium:
-            let conditionNote = conditionSeverity == .moderate ? "Condition is chronic/moderate and should be monitored. " : ""
-            return "\(medicineName) prescribed for \(patientName) (\(ageGroup.rawValue)). \(conditionNote)\(hasInteractions ? "Potential drug interactions noted — review before dispensing." : "") \(hasDuplicates ? "Possible duplicate therapy detected." : "") Monitor and counsel patient on warning signs."
-        case .high:
-            return "HIGH RISK for \(patientName). \(hasInteractions ? "Significant drug interactions detected." : "") \(hasDuplicates ? "Multiple medications from the same class — review necessity." : "") Strongly recommend pharmacist consultation before dispensing."
-        case .critical:
-            let conditionNote = conditionSeverity == .severe ? "Diagnosis indicates a severe/life-threatening condition. " : ""
-            return "CRITICAL SAFETY ALERT for \(patientName). \(conditionNote)This prescription may be contraindicated for \(ageGroup.rawValue.lowercased()) patients. DO NOT dispense without immediate prescriber consultation."
-        case .unknown:
-            return "Insufficient data to verify \(medicineName) for \(patientName). Enter more details or consult a pharmacist."
-        }
     }
 }

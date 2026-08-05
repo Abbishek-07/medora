@@ -10,7 +10,6 @@ final class VerificationResult {
     var duplicateWarning: String
     var dosageAssessment: String
     var alternativeSuggestions: String
-    var aiSummary: String
     var verifiedAt: Date
     
     init(
@@ -19,8 +18,7 @@ final class VerificationResult {
         interactionWarnings: String = "",
         duplicateWarning: String = "",
         dosageAssessment: String = "",
-        alternativeSuggestions: String = "",
-        aiSummary: String = ""
+        alternativeSuggestions: String = ""
     ) {
         self.id = UUID()
         self.prescriptionRef = prescriptionRef
@@ -29,7 +27,6 @@ final class VerificationResult {
         self.duplicateWarning = duplicateWarning
         self.dosageAssessment = dosageAssessment
         self.alternativeSuggestions = alternativeSuggestions
-        self.aiSummary = aiSummary
         self.verifiedAt = .now
     }
 }

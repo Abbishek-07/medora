@@ -13,7 +13,6 @@ final class Prescription {
     var date: Date
     var notes: String
     var diagnosis: String = ""
-    var aiSummary: String
     var riskLevel: RiskLevel
     var interactionWarnings: String
     var duplicateWarning: String
@@ -41,7 +40,6 @@ final class Prescription {
         self.date = date
         self.notes = notes
         self.diagnosis = diagnosis
-        self.aiSummary = ""
         self.riskLevel = .unknown
         self.interactionWarnings = ""
         self.duplicateWarning = ""

@@ -2,7 +2,7 @@
 //  VerificationDetailView.swift
 //  Medora
 //
-//  Same Prescription data, RiskLevel logic, and AI verification fields
+//  Same Prescription data, RiskLevel logic, and verification fields
 //  as before — only the visual layer changed. GroupBox now renders as
 //  a white pink-shadowed card via a custom GroupBoxStyle, so the API
 //  (GroupBox("Title") { ... }) didn't need to change at the call sites.
@@ -63,8 +63,11 @@ struct VerificationDetailView: View {
                 }
 
                 // Verification results
-                if !prescription.aiSummary.isEmpty {
-                    GroupBox("AI Verification") {
+                if !prescription.interactionWarnings.isEmpty ||
+                    !prescription.dosageAssessment.isEmpty ||
+                    !prescription.alternativeSuggestions.isEmpty ||
+                    !prescription.duplicateWarning.isEmpty {
+                    GroupBox("Verification") {
                         VStack(alignment: .leading, spacing: 12) {
                             if !prescription.interactionWarnings.isEmpty {
                                 WarningBox(icon: "exclamationmark.triangle.fill", label: "Drug Interactions", text: prescription.interactionWarnings, color: .medoraPending)
@@ -78,20 +81,6 @@ struct VerificationDetailView: View {
                             if !prescription.alternativeSuggestions.isEmpty && prescription.alternativeSuggestions != "No alternative suggestions needed." {
                                 WarningBox(icon: "arrow.triangle.swap", label: "Safer Alternatives", text: prescription.alternativeSuggestions, color: .medoraResolved)
                             }
-
-                            VStack(alignment: .leading, spacing: 4) {
-                                Text("AI Summary")
-                                    .font(.caption.weight(.semibold))
-                                    .foregroundStyle(Color.medoraGraySubtle)
-                                Text(prescription.aiSummary)
-                                    .font(.callout)
-                                    .foregroundStyle(Color.medoraInk)
-                            }
-                            .padding()
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .background(
-                                RoundedRectangle(cornerRadius: 12).fill(Color.medoraPinkSoft.opacity(0.5))
-                            )
                         }
                     }
                 } else {
