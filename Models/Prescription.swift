@@ -19,6 +19,11 @@ final class Prescription {
     var dosageAssessment: String
     var alternativeSuggestions: String
     var diagnosisAssessment: String = ""
+    /// Non-empty ONLY when a prescribed medicine name could not be found in
+    /// the medicine database at all. Displayed as a dedicated, prominent
+    /// warning in the detail view — distinct from normal dosage/interaction
+    /// notes, since "no data" must never be presented as "verified safe".
+    var unverifiedMedicineWarning: String = ""
     
     init(
         patientName: String = "",
@@ -47,6 +52,7 @@ final class Prescription {
         self.dosageAssessment = ""
         self.alternativeSuggestions = ""
         self.diagnosisAssessment = ""
+        self.unverifiedMedicineWarning = ""
     }
 }
 

@@ -66,8 +66,13 @@ struct VerificationEngine {
         // 0. Which of these medicine names actually exist in our database?
         // A name we don't recognize (typo, non-existent drug, or garbage
         // input like "Petrol") must NEVER be treated as safe by default —
-        // "we have no data" is not the same as "nothing is wrong".
+        // "we have no data" is not the same as "nothing is wrong". This gets
+        // its own dedicated, prominent warning distinct from dosage notes.
         let unrecognizedMedicines = medicineNames.filter { db.findMedicine(named: $0) == nil }
+        let unverifiedWarningText: String = unrecognizedMedicines.isEmpty ? "" :
+            "NOT VERIFIED: " + unrecognizedMedicines.map { "\"\($0)\"" }.joined(separator: ", ")
+            + (unrecognizedMedicines.count > 1 ? " were" : " was")
+            + "Do not use — this could be harmful. Please double-check the spelling or verify manually before dispensing."
 
         // 1. Check interactions.
         // `findInteractions` returns general per-drug interaction info (e.g.
@@ -83,7 +88,12 @@ struct VerificationEngine {
         // interaction risk.
         let actionableInteractionCount = medicineNames.count > 1 ? interactions.count : 0
 
-        // 2. Check duplicates
+        // 2. Check duplicates — compares this prescription's medicines
+        // against every OTHER existing prescription for the same patient
+        // name, regardless of date. So prescribing the same medicine to the
+        // same patient again (e.g. the next day) is expected to correctly
+        // surface "previously prescribed on <date>" — that's this feature
+        // working as intended, not a bug.
         var duplicateWarnings: [String] = []
         for existing in existingPrescriptions where existing.id != prescription.id {
             let existingMeds = existing.medicineName
@@ -100,15 +110,12 @@ struct VerificationEngine {
         // 3. Age-based dosage.
         // A hard contraindication (e.g. aspirin in a child) must be treated
         // as a real, risk-elevating flag rather than just informational text.
-        // Unrecognized medicines get an explicit "could not verify" note
-        // here too, so it's visible right in the Dosage Assessment card.
+        // Unrecognized medicines are skipped here (already covered by the
+        // dedicated warning above) rather than double-reported.
         var dosageNotes: [String] = []
         var hasAgeContraindication = false
         for name in medicineNames {
-            if db.findMedicine(named: name) == nil {
-                dosageNotes.append("'\(name)' was not found in the medicine database. Dosage, age-appropriateness, and interactions could not be verified — manual pharmacist review required.")
-                continue
-            }
+            guard db.findMedicine(named: name) != nil else { continue }
             let warning = db.getAgeBasedWarnings(medicineName: name, ageGroup: prescription.ageGroup)
             if !warning.isEmpty {
                 dosageNotes.append(warning)
@@ -118,13 +125,18 @@ struct VerificationEngine {
                 }
             }
         }
-        let dosageText = dosageNotes.isEmpty ? "Dosage appears appropriate for \(prescription.ageGroup.rawValue) age group." : dosageNotes.joined(separator: "\n")
+        let dosageText: String
+        if dosageNotes.isEmpty {
+            dosageText = unrecognizedMedicines.isEmpty
+                ? "Dosage appears appropriate for \(prescription.ageGroup.rawValue) age group."
+                : "Could not assess — see 'Not Verified' warning above."
+        } else {
+            dosageText = dosageNotes.joined(separator: "\n")
+        }
 
         // 4. Diagnosis <-> medicine match.
         // If a diagnosis was entered, check whether each prescribed medicine
         // is actually a recognized treatment for it (via Medicine.indications).
-        // Unrecognized medicines are skipped here (already flagged above via
-        // hasUnrecognizedMedicine) rather than double-reported.
         var diagnosisNotes: [String] = []
         var diagnosisMismatch = false
         let trimmedDiagnosis = prescription.diagnosis.trimmingCharacters(in: .whitespaces)
@@ -151,7 +163,7 @@ struct VerificationEngine {
         } else if trimmedDiagnosis.isEmpty {
             diagnosisText = "No diagnosis provided."
         } else if !unrecognizedMedicines.isEmpty {
-            diagnosisText = "Cannot verify — medicine not found in database."
+            diagnosisText = "Cannot verify — see 'Not Verified' warning above."
         } else {
             diagnosisText = "No indication data available to verify this medicine against \"\(trimmedDiagnosis)\"."
         }
@@ -171,9 +183,11 @@ struct VerificationEngine {
 
         // 7. Determine risk level.
         //    - Hard age contraindication or a severe underlying condition -> critical.
+        //    - An unrecognized/unverifiable medicine -> high. We simply
+        //      cannot certify an unknown substance as safe, and this should
+        //      surface the same "review before dispensing" banner as any
+        //      other serious concern.
         //    - Medicine doesn't match the diagnosis -> high.
-        //    - Any medicine we couldn't find in the database -> medium at minimum
-        //      (we simply cannot certify something we have no data on as safe).
         //    - Real multi-drug conflicts / repeated duplicates -> high.
         //    - Any actionable interaction, a duplicate, or a moderate condition -> medium.
         //    - Otherwise (single known-safe drug, no conflicts, no mismatch) -> low.
@@ -181,10 +195,10 @@ struct VerificationEngine {
 
         if hasAgeContraindication || conditionSeverity == .severe {
             riskLevel = .critical
+        } else if !unrecognizedMedicines.isEmpty {
+            riskLevel = .high
         } else if diagnosisMismatch {
             riskLevel = .high
-        } else if !unrecognizedMedicines.isEmpty {
-            riskLevel = .medium
         } else if actionableInteractionCount > 2 || duplicateWarnings.count > 1 {
             riskLevel = .high
         } else if actionableInteractionCount > 0 || duplicateWarnings.count > 0 || conditionSeverity == .moderate {
@@ -200,7 +214,8 @@ struct VerificationEngine {
             duplicateWarning: duplicateText,
             dosageAssessment: dosageText,
             alternativeSuggestions: altText,
-            diagnosisAssessment: diagnosisText
+            diagnosisAssessment: diagnosisText,
+            unverifiedMedicineWarning: unverifiedWarningText
         )
     }
 }

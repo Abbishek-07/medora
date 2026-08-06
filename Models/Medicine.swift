@@ -47,5 +47,7 @@ enum MedicineCategory: String, Codable, CaseIterable {
     case antidiabetic = "Antidiabetic"
     case respiratory = "Respiratory"
     case psychiatric = "Psychiatric"
+    case gastrointestinal = "Gastrointestinal"
+    case vitamin = "Vitamin & Supplement"
     case other = "Other"
 }
