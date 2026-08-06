@@ -100,6 +100,7 @@ final class NewPrescriptionViewModel {
             rx.dosageAssessment = result.dosageAssessment
             rx.alternativeSuggestions = result.alternativeSuggestions
             rx.diagnosisAssessment = result.diagnosisAssessment
+            rx.unverifiedMedicineWarning = result.unverifiedMedicineWarning
             rx.riskLevel = result.riskLevel
             rx.status = result.riskLevel == .low ? .verified : .flagged
 

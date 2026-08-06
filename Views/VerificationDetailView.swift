@@ -7,10 +7,11 @@
 //  a white pink-shadowed card via a custom GroupBoxStyle, so the API
 //  (GroupBox("Title") { ... }) didn't need to change at the call sites.
 //
-//  Added: Diagnosis field in Prescription Details, a Diagnosis Match
-//  card (medicine <-> diagnosis, from VerificationEngine), and an
-//  Other Uses card showing what else each prescribed medicine treats
-//  (pulled live from MedicineDatabaseService.indications).
+//  Added: Diagnosis field in Prescription Details, a dedicated red
+//  "Not Verified" box for medicines not found in the database, a
+//  Diagnosis Match card (medicine <-> diagnosis, from VerificationEngine),
+//  and an Other Uses card showing what else each prescribed medicine
+//  treats (pulled live from MedicineDatabaseService.indications).
 //
 
 import SwiftUI
@@ -20,6 +21,10 @@ struct VerificationDetailView: View {
     let prescription: Prescription
 
     @Environment(\.modelContext) private var modelContext
+
+    private var hasUnverifiedMedicine: Bool {
+        !prescription.unverifiedMedicineWarning.isEmpty
+    }
 
     /// "Medicine: fever, headache, mild pain" lines for every medicine on
     /// this prescription, used for the "Other Uses" reference card.
@@ -45,9 +50,6 @@ struct VerificationDetailView: View {
         if text.contains("not a typical treatment") {
             return .medoraFlagged
         }
-        if text.contains("no diagnosis provided") || text.contains("no indication data available") {
-            return .medoraGraySubtle
-        }
         if text.contains("recognized treatment") {
             return .medoraVerified
         }
@@ -72,12 +74,14 @@ struct VerificationDetailView: View {
                 .frame(maxWidth: .infinity)
                 .medoraCard()
 
-                // Warning banner
+                // Warning banner — wording adapts for the unverified-medicine case
                 if prescription.riskLevel == .high || prescription.riskLevel == .critical {
                     HStack(spacing: 10) {
                         Image(systemName: "exclamationmark.shield.fill")
                             .foregroundStyle(Color.medoraFlagged)
-                        Text("Safety concerns detected — review before dispensing")
+                        Text(hasUnverifiedMedicine
+                             ? "Unverified medicine — do not dispense without manual review"
+                             : "Safety concerns detected — review before dispensing")
                             .font(.caption.weight(.semibold))
                             .foregroundStyle(Color.medoraInk)
                     }
@@ -85,6 +89,35 @@ struct VerificationDetailView: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .background(
                         RoundedRectangle(cornerRadius: 14).fill(Color.medoraFlagged.opacity(0.1))
+                    )
+                }
+
+                // Dedicated "Not Verified" box — separate and more prominent
+                // than the regular Verification card, since this means we
+                // have NO data on the substance at all, not just a caution.
+                if hasUnverifiedMedicine {
+                    HStack(alignment: .top, spacing: 10) {
+                        Image(systemName: "xmark.shield.fill")
+                            .foregroundStyle(Color.medoraFlagged)
+                            .font(.title3)
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text("Not Verified")
+                                .font(.subheadline.bold())
+                                .foregroundStyle(Color.medoraFlagged)
+                            Text(prescription.unverifiedMedicineWarning)
+                                .font(.caption)
+                                .foregroundStyle(Color.medoraInk)
+                        }
+                        Spacer()
+                    }
+                    .padding()
+                    .background(
+                        RoundedRectangle(cornerRadius: 14)
+                            .fill(Color.medoraFlagged.opacity(0.12))
+                    )
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 14)
+                            .stroke(Color.medoraFlagged.opacity(0.4), lineWidth: 1)
                     )
                 }
 
@@ -140,7 +173,8 @@ struct VerificationDetailView: View {
                 }
 
                 // Other uses of the prescribed medicine(s) — reference info,
-                // not a warning, so it gets its own neutral card.
+                // not a warning, so it gets its own neutral card. Only shows
+                // for medicines we actually recognize.
                 if !otherUsesLines.isEmpty {
                     GroupBox("Other Uses") {
                         VStack(alignment: .leading, spacing: 12) {
