@@ -9,12 +9,14 @@
 /* Begin PBXBuildFile section */
 		18DAF97E30248E950075871D /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 18DAF97D30248E950075871D /* Media.xcassets */; };
 		582EB634301DFCCB0055B9E7 /*  MedoraApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 582EB633301DFCC50055B9E7 /*  MedoraApp.swift */; };
+		784EBDAF302495E2007C12CA /* MedicalEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 784EBDAE302495D6007C12CA /* MedicalEngine.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		18DAF97D30248E950075871D /* Media.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Media.xcassets; sourceTree = "<group>"; };
 		582EB633301DFCC50055B9E7 /*  MedoraApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = " MedoraApp.swift"; sourceTree = "<group>"; };
 		582EB635301DFEB30055B9E7 /* New.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = New.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		784EBDAE302495D6007C12CA /* MedicalEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MedicalEngine.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -61,6 +63,7 @@
 				18F2C0A0301DF8B200B48DEE /* Services */,
 				582EB633301DFCC50055B9E7 /*  MedoraApp.swift */,
 				582EB635301DFEB30055B9E7 /* New.app */,
+				784EBDAE302495D6007C12CA /* MedicalEngine.swift */,
 			);
 			sourceTree = "<group>";
 		};
@@ -144,6 +147,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				582EB634301DFCCB0055B9E7 /*  MedoraApp.swift in Sources */,
+				784EBDAF302495E2007C12CA /* MedicalEngine.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

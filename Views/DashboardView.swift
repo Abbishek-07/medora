@@ -1,43 +1,58 @@
-//
-//  DashboardView.swift
-//  Medora
-//
-//  Same DashboardViewModel / SwiftData logic as before — only the
-//  visual layer changed: white+pink cards, spring-in stat boxes,
-//  and a smooth cross-fade when the list refreshes.
-//
-
 import SwiftUI
 import SwiftData
 
 struct DashboardView: View {
     @Environment(\.modelContext) private var context
     @State private var vm = DashboardViewModel()
+    @State private var showChat = false
 
     var body: some View {
-        ScrollView {
-            VStack(spacing: 20) {
-                header
+        ZStack(alignment: .bottomTrailing) {
+            // Main Dashboard Content
+            ScrollView {
+                VStack(spacing: 20) {
+                    header
 
-                LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 14) {
-                    StatCard(icon: "pills.fill", label: "Total", value: "\(vm.total)", color: .medoraTotal)
-                    StatCard(icon: "checkmark.shield.fill", label: "Verified", value: "\(vm.verified)", color: .medoraVerified)
-                    StatCard(icon: "clock.fill", label: "Pending", value: "\(vm.pending)", color: .medoraPending)
-                    StatCard(icon: "exclamationmark.triangle.fill", label: "Flagged", value: "\(vm.flagged)", color: .medoraFlagged)
+                    LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 14) {
+                        StatCard(icon: "pills.fill", label: "Total", value: "\(vm.total)", color: .medoraTotal)
+                        StatCard(icon: "checkmark.shield.fill", label: "Verified", value: "\(vm.verified)", color: .medoraVerified)
+                        StatCard(icon: "clock.fill", label: "Pending", value: "\(vm.pending)", color: .medoraPending)
+                        StatCard(icon: "exclamationmark.triangle.fill", label: "Flagged", value: "\(vm.flagged)", color: .medoraFlagged)
+                    }
+
+                    if vm.isLoading {
+                        ProgressView()
+                            .tint(.medoraPinkDeep)
+                            .padding(.top, 8)
+                    }
                 }
+                .padding()
+                .padding(.bottom, 60) // Extra padding to prevent floating button overlapping content
+            }
+            .background(LinearGradient.medoraBackground.ignoresSafeArea())
+            .navigationTitle("Medora")
+            .onAppear { vm.load(context: context) }
+            .refreshable { vm.load(context: context) }
 
-                if vm.isLoading {
-                    ProgressView()
-                        .tint(.medoraPinkDeep)
-                        .padding(.top, 8)
+            // Floating Chatbot Button (Bottom Right)
+            Button(action: { showChat = true }) {
+                ZStack {
+                    Circle()
+                        .fill(Color.medoraPinkDeep)
+                        .frame(width: 58, height: 58)
+                        .shadow(color: Color.medoraPinkDeep.opacity(0.35), radius: 8, x: 0, y: 4)
+                    
+                    Image(systemName: "sparkles.bubble.fill")
+                        .font(.system(size: 24, weight: .semibold))
+                        .foregroundStyle(.white)
                 }
             }
-            .padding()
+            .padding(.trailing, 20)
+            .padding(.bottom, 24) // Adjust upward if floating above custom bottom tab bar
         }
-        .background(LinearGradient.medoraBackground.ignoresSafeArea())
-        .navigationTitle("Medora")
-        .onAppear { vm.load(context: context) }
-        .refreshable { vm.load(context: context) }
+        .sheet(isPresented: $showChat) {
+            MedoraChatView()
+        }
     }
 
     private var header: some View {
