@@ -7,10 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		18DAF97E30248E950075871D /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 18DAF97D30248E950075871D /* Media.xcassets */; };
 		582EB634301DFCCB0055B9E7 /*  MedoraApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 582EB633301DFCC50055B9E7 /*  MedoraApp.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		18DAF97D30248E950075871D /* Media.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Media.xcassets; sourceTree = "<group>"; };
 		582EB633301DFCC50055B9E7 /*  MedoraApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = " MedoraApp.swift"; sourceTree = "<group>"; };
 		582EB635301DFEB30055B9E7 /* New.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = New.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -52,6 +54,7 @@
 		58EEDCFB301C7EB1005F07F0 = {
 			isa = PBXGroup;
 			children = (
+				18DAF97D30248E950075871D /* Media.xcassets */,
 				78A38042301DF04B007BFD54 /* viewModels */,
 				78A3804A301DF231007BFD54 /* Views */,
 				18F2C092301DF80B00B48DEE /* Models */,
@@ -129,6 +132,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				18DAF97E30248E950075871D /* Media.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -275,6 +279,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = Medora;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -309,6 +314,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = Medora;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
