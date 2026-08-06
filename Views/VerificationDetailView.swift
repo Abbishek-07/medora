@@ -12,7 +12,6 @@ import SwiftUI
 
 struct VerificationDetailView: View {
     let prescription: Prescription
-    @StateObject private var expVM = ExplanationViewModel()
 
     var body: some View {
         ScrollView {
@@ -81,40 +80,6 @@ struct VerificationDetailView: View {
                             }
                             if !prescription.alternativeSuggestions.isEmpty && prescription.alternativeSuggestions != "No alternative suggestions needed." {
                                 WarningBox(icon: "arrow.triangle.swap", label: "Safer Alternatives", text: prescription.alternativeSuggestions, color: .medoraResolved)
-                            }
-
-                            Divider().padding(.vertical, 4)
-
-                            Button {
-                                Task { await expVM.makeExplanation(for: VerificationResult(
-                                    prescriptionRef: "\(prescription.patientName) — \(prescription.medicineName)",
-                                    riskLevel: prescription.riskLevel,
-                                    interactionWarnings: prescription.interactionWarnings,
-                                    duplicateWarning: prescription.duplicateWarning,
-                                    dosageAssessment: prescription.dosageAssessment,
-                                    alternativeSuggestions: prescription.alternativeSuggestions
-                                )) }
-                            } label: {
-                                if expVM.isLoading {
-                                    HStack(spacing: 8) { ProgressView().tint(.medoraPinkDeep); Text("Generating...") }
-                                        .frame(maxWidth: .infinity)
-                                        .padding(.vertical, 10)
-                                } else {
-                                    Label("Explain with medgemma", systemImage: "sparkles")
-                                        .frame(maxWidth: .infinity)
-                                        .padding(.vertical, 10)
-                                }
-                            }
-                            .buttonStyle(.borderedProminent)
-                            .tint(.medoraPinkDeep)
-
-                            if !expVM.explanation.isEmpty {
-                                Text(expVM.explanation)
-                                    .font(.callout)
-                                    .foregroundStyle(Color.medoraInk)
-                                    .padding()
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-                                    .background(RoundedRectangle(cornerRadius: 12).fill(Color.medoraPinkSoft.opacity(0.5)))
                             }
                         }
                     }
