@@ -99,6 +99,7 @@ final class NewPrescriptionViewModel {
             rx.duplicateWarning = result.duplicateWarning
             rx.dosageAssessment = result.dosageAssessment
             rx.alternativeSuggestions = result.alternativeSuggestions
+            rx.diagnosisAssessment = result.diagnosisAssessment
             rx.riskLevel = result.riskLevel
             rx.status = result.riskLevel == .low ? .verified : .flagged
 

@@ -18,6 +18,7 @@ final class Prescription {
     var duplicateWarning: String
     var dosageAssessment: String
     var alternativeSuggestions: String
+    var diagnosisAssessment: String = ""
     
     init(
         patientName: String = "",
@@ -45,6 +46,7 @@ final class Prescription {
         self.duplicateWarning = ""
         self.dosageAssessment = ""
         self.alternativeSuggestions = ""
+        self.diagnosisAssessment = ""
     }
 }
 

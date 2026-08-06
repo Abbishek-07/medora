@@ -7,11 +7,52 @@
 //  a white pink-shadowed card via a custom GroupBoxStyle, so the API
 //  (GroupBox("Title") { ... }) didn't need to change at the call sites.
 //
+//  Added: Diagnosis field in Prescription Details, a Diagnosis Match
+//  card (medicine <-> diagnosis, from VerificationEngine), and an
+//  Other Uses card showing what else each prescribed medicine treats
+//  (pulled live from MedicineDatabaseService.indications).
+//
 
 import SwiftUI
+import SwiftData
 
 struct VerificationDetailView: View {
     let prescription: Prescription
+
+    @Environment(\.modelContext) private var modelContext
+
+    /// "Medicine: fever, headache, mild pain" lines for every medicine on
+    /// this prescription, used for the "Other Uses" reference card.
+    private var otherUsesLines: [(name: String, uses: String)] {
+        let db = MedicineDatabaseService(context: modelContext)
+        let names = prescription.medicineName
+            .components(separatedBy: CharacterSet(charactersIn: "+,"))
+            .map { $0.trimmingCharacters(in: .whitespaces) }
+            .filter { !$0.isEmpty }
+
+        return names.compactMap { name in
+            let uses = db.getIndications(for: name)
+            guard !uses.isEmpty else { return nil }
+            return (name, uses.joined(separator: ", "))
+        }
+    }
+
+    /// Color for the diagnosis-match card: green if every medicine matched
+    /// the diagnosis, red/orange if any medicine was flagged as a mismatch,
+    /// gray if there simply wasn't enough data to judge.
+    private var diagnosisMatchColor: Color {
+        let text = prescription.diagnosisAssessment.lowercased()
+        if text.contains("not a typical treatment") {
+            return .medoraFlagged
+        }
+        if text.contains("no diagnosis provided") || text.contains("no indication data available") {
+            return .medoraGraySubtle
+        }
+        if text.contains("recognized treatment") {
+            return .medoraVerified
+        }
+        return .medoraGraySubtle
+    }
 
     var body: some View {
         ScrollView {
@@ -55,6 +96,9 @@ struct VerificationDetailView: View {
                         DetailRow(icon: "number", label: "Dosage", value: prescription.dosage)
                         DetailRow(icon: "clock.fill", label: "Frequency", value: prescription.frequency)
                         DetailRow(icon: "figure.stand", label: "Age Group", value: prescription.ageGroup.rawValue)
+                        if !prescription.diagnosis.isEmpty {
+                            DetailRow(icon: "stethoscope", label: "Diagnosis", value: prescription.diagnosis)
+                        }
                         DetailRow(icon: "calendar", label: "Date", value: prescription.date.formatted(date: .long, time: .omitted))
                         if !prescription.notes.isEmpty {
                             DetailRow(icon: "note.text", label: "Notes", value: prescription.notes)
@@ -66,9 +110,13 @@ struct VerificationDetailView: View {
                 if !prescription.interactionWarnings.isEmpty ||
                     !prescription.dosageAssessment.isEmpty ||
                     !prescription.alternativeSuggestions.isEmpty ||
-                    !prescription.duplicateWarning.isEmpty {
+                    !prescription.duplicateWarning.isEmpty ||
+                    !prescription.diagnosisAssessment.isEmpty {
                     GroupBox("Verification") {
                         VStack(alignment: .leading, spacing: 12) {
+                            if !prescription.diagnosisAssessment.isEmpty {
+                                WarningBox(icon: "stethoscope", label: "Diagnosis Match", text: prescription.diagnosisAssessment, color: diagnosisMatchColor)
+                            }
                             if !prescription.interactionWarnings.isEmpty {
                                 WarningBox(icon: "exclamationmark.triangle.fill", label: "Drug Interactions", text: prescription.interactionWarnings, color: .medoraPending)
                             }
@@ -89,6 +137,35 @@ struct VerificationDetailView: View {
                         systemImage: "hourglass",
                         description: Text("Verification runs automatically after saving. Pull to refresh.")
                     )
+                }
+
+                // Other uses of the prescribed medicine(s) — reference info,
+                // not a warning, so it gets its own neutral card.
+                if !otherUsesLines.isEmpty {
+                    GroupBox("Other Uses") {
+                        VStack(alignment: .leading, spacing: 12) {
+                            ForEach(otherUsesLines, id: \.name) { entry in
+                                HStack(alignment: .top, spacing: 10) {
+                                    Image(systemName: "list.bullet.rectangle.fill")
+                                        .foregroundStyle(Color.medoraPinkDeep)
+                                        .font(.callout)
+                                    VStack(alignment: .leading, spacing: 2) {
+                                        Text(entry.name)
+                                            .font(.subheadline.bold())
+                                            .foregroundStyle(Color.medoraInk)
+                                        Text(entry.uses)
+                                            .font(.caption)
+                                            .foregroundStyle(Color.medoraGraySubtle)
+                                    }
+                                    Spacer()
+                                }
+                                .padding()
+                                .background(
+                                    RoundedRectangle(cornerRadius: 12).fill(Color.medoraPinkDeep.opacity(0.06))
+                                )
+                            }
+                        }
+                    }
                 }
             }
             .padding()

@@ -11,7 +11,13 @@ final class Medicine {
     var saferAlternatives: String
     var maxDosageAdult: String
     var maxDosageChild: String
-    
+    /// Comma-separated list of conditions this medicine is a recognized
+    /// treatment for, e.g. "fever, mild pain, headache, common cold".
+    /// Used to verify the prescribed medicine actually matches the
+    /// diagnosis, and to show "other uses" info in the detail view.
+    /// Default "" keeps existing seeded data / SwiftData migration safe.
+    var indications: String = ""
+
     init(
         name: String,
         category: MedicineCategory = .other,
@@ -19,7 +25,8 @@ final class Medicine {
         ageRestrictions: String = "",
         saferAlternatives: String = "",
         maxDosageAdult: String = "",
-        maxDosageChild: String = ""
+        maxDosageChild: String = "",
+        indications: String = ""
     ) {
         self.id = UUID()
         self.name = name
@@ -29,6 +36,7 @@ final class Medicine {
         self.saferAlternatives = saferAlternatives
         self.maxDosageAdult = maxDosageAdult
         self.maxDosageChild = maxDosageChild
+        self.indications = indications
     }
 }
 

@@ -10,6 +10,10 @@ final class VerificationResult {
     var duplicateWarning: String
     var dosageAssessment: String
     var alternativeSuggestions: String
+    /// Whether the prescribed medicine matches the stated diagnosis,
+    /// e.g. "Paracetamol is a recognized treatment for \"fever\"." or a
+    /// caution if it isn't a typical treatment for the diagnosis given.
+    var diagnosisAssessment: String = ""
     var verifiedAt: Date
     
     init(
@@ -18,7 +22,8 @@ final class VerificationResult {
         interactionWarnings: String = "",
         duplicateWarning: String = "",
         dosageAssessment: String = "",
-        alternativeSuggestions: String = ""
+        alternativeSuggestions: String = "",
+        diagnosisAssessment: String = ""
     ) {
         self.id = UUID()
         self.prescriptionRef = prescriptionRef
@@ -27,6 +32,7 @@ final class VerificationResult {
         self.duplicateWarning = duplicateWarning
         self.dosageAssessment = dosageAssessment
         self.alternativeSuggestions = alternativeSuggestions
+        self.diagnosisAssessment = diagnosisAssessment
         self.verifiedAt = .now
     }
 }

@@ -67,4 +67,15 @@ final class MedicineDatabaseService {
         guard let med = findMedicine(named: medicineName) else { return "" }
         return med.saferAlternatives.isEmpty ? "" : "Safer alternatives: \(med.saferAlternatives)"
     }
+
+    /// Conditions this medicine is a recognized treatment for, e.g.
+    /// ["fever", "mild pain", "headache"]. Empty if unknown medicine or
+    /// no indication data has been seeded for it yet.
+    func getIndications(for medicineName: String) -> [String] {
+        guard let med = findMedicine(named: medicineName) else { return [] }
+        return med.indications
+            .components(separatedBy: ",")
+            .map { $0.trimmingCharacters(in: .whitespaces) }
+            .filter { !$0.isEmpty }
+    }
 }
